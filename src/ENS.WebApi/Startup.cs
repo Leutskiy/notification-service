@@ -4,7 +4,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
 using SimpleInjector;
+using System;
 
 namespace ENS.WebApi
 {
@@ -16,6 +18,7 @@ namespace ENS.WebApi
         {
             // Set to false. This will be the default in v5.x and going forward.
             // _container.Options.ResolveUnregisteredConcreteTypes = false;
+            _container.Options.ResolveUnregisteredConcreteTypes = true;
 
             Configuration = configuration;
         }
@@ -29,6 +32,29 @@ namespace ENS.WebApi
             services.AddControllers();
             services.AddLogging();
             services.AddLocalization(options => options.ResourcesPath = "Resources");
+
+            // Register the Swagger generator, defining 1 or more Swagger documents
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Version = "v1",
+                    Title = "Notification API",
+                    Description = "API for notification service",
+                    TermsOfService = new Uri("https://example.com/terms"),
+                    Contact = new OpenApiContact
+                    {
+                        Name = "FintechIQ",
+                        Email = string.Empty,
+                        Url = new Uri("https://twitter.com/spboyer"),
+                    },
+                    License = new OpenApiLicense
+                    {
+                        Name = "Use under LICX",
+                        Url = new Uri("https://example.com/license"),
+                    }
+                });
+            });
 
             // Sets up the basic configuration that for integrating Simple Injector with
             // ASP.NET Core by setting the DefaultScopedLifestyle, and setting up auto
@@ -65,6 +91,19 @@ namespace ENS.WebApi
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseStaticFiles();
+
+            // Enable middleware to serve generated Swagger as a JSON endpoint.
+            app.UseSwagger();
+
+            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
+            // specifying the Swagger JSON endpoint.
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Notification API V1");
+                c.RoutePrefix = string.Empty;
+            });
+
             // UseSimpleInjector() finalizes the integration process.
             app.UseSimpleInjector(_container);
 
