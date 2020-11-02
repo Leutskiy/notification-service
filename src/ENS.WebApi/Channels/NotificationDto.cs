@@ -1,11 +1,12 @@
 ﻿using System;
 
-namespace ENS.WebApi.Channels.Email
+namespace ENS.WebApi.Channels
 {
     /// <summary>
     /// DTO уведомления
     /// </summary>
-    public sealed class NotificationDto
+    public class NotificationDto<TRecipientAddress>
+        where TRecipientAddress : class
     {
         /// <summary>
         /// Идентификатор взаимодействия (опционально)
@@ -15,12 +16,12 @@ namespace ENS.WebApi.Channels.Email
         /// <summary>
         /// Отправитель
         /// </summary>
-        public NotificationFromDto Sender { get; set; }
+        public NotificationSenderDto Sender { get; set; }
 
         /// <summary>
         /// Получатели
         /// </summary>
-        public NotificationToDto<Object>[] Recipients { get; set; }
+        public NotificationRecipientDto<TRecipientAddress>[] Recipients { get; set; }
 
         /// <summary>
         /// Тело уведмоления
@@ -28,7 +29,7 @@ namespace ENS.WebApi.Channels.Email
         public NotificationBodyDto Body { get; set; }
     }
 
-    public sealed class NotificationFromDto
+    public sealed class NotificationSenderDto
     {
         /// <summary>
         /// Юридическое лицо
@@ -41,7 +42,7 @@ namespace ENS.WebApi.Channels.Email
         public string Brand { get; set; }
     }
 
-    public sealed class NotificationToDto<TRecipientAddress>
+    public sealed class NotificationRecipientDto<TRecipientAddress>
         where TRecipientAddress : class
     {
         /// <summary>

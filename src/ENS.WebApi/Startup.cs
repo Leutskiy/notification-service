@@ -7,6 +7,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using SimpleInjector;
 using System;
+using System.Reflection;
 
 namespace ENS.WebApi
 {
@@ -29,7 +30,10 @@ namespace ENS.WebApi
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services.AddControllers(options =>
+            {
+                options.ModelBinderProviders.Insert(0, new EmailModelBinderProvider());
+            });
             services.AddLogging();
             services.AddLocalization(options => options.ResourcesPath = "Resources");
 
@@ -86,6 +90,7 @@ namespace ENS.WebApi
         {
             // Add application services. For instance:
             _container.Register<IUserService, UserService>(Lifestyle.Singleton);
+            _container.RegisterPackages(new[] { Assembly.GetExecutingAssembly() });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

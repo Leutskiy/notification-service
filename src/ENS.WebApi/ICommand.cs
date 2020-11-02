@@ -3,6 +3,4 @@
     public interface ICommand<out TOut>
     {
     }
-
-
 }

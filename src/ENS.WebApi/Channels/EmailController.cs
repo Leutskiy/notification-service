@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
-namespace ENS.WebApi.Channels.Email
+namespace ENS.WebApi.Channels
 {
     /// <summary>
     /// Контроллер отправки сообщений на электронную почту
@@ -18,7 +19,7 @@ namespace ENS.WebApi.Channels.Email
         }
 
         [HttpPost]
-        public async Task SendAsync(NotificationDto notificationDto)
+        public async Task<string?> SendAsync(SendEmailNotification notificationDto)
         {
             // валидация данных
 
@@ -28,7 +29,9 @@ namespace ENS.WebApi.Channels.Email
 
             // проверка политик, выбор провайдера, ретрай, ...
 
-            throw new NotImplementedException();
+            await Task.Delay(1);
+
+            return notificationDto.Recipients.FirstOrDefault()?.Recipient.ToString();
         }
     }
 }
