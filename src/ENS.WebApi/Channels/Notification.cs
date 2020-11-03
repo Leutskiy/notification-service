@@ -11,7 +11,7 @@ namespace ENS.WebApi.Channels
         /// <summary>
         /// Идентификатор клиента
         /// </summary>
-        public Guid ClienId { get; protected set; }
+        public Guid ClientId { get; protected set; }
 
         /// <summary>
         /// Идентификатор инициатора отправки
@@ -52,5 +52,26 @@ namespace ENS.WebApi.Channels
         /// Является ли отправка автоматической?!
         /// </summary>
         public bool IsAuto { get; protected set; }
+
+        public Notification(
+            Guid clienId,
+            Guid initiatorId,
+            Guid communicationProviderId,
+            Guid? documentId,
+            Guid? interactionId,
+            string messageText,
+            NotificationStatus status,
+            NotificationType type)
+        {
+            Id = Id;
+            ClientId = clienId;
+            InitiatorId = initiatorId;
+            CommunicationProviderId = communicationProviderId;
+            DocumentId = documentId;
+            InteractionId = interactionId;
+            MessageText = messageText;
+            Status = status;
+            Type = type;
+        }
     }
 }
