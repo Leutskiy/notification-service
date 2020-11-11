@@ -63,7 +63,8 @@ namespace ENS.WebApi.Channels
             NotificationStatus status,
             NotificationType type)
         {
-            Id = Id;
+            // TODO: переделать на свой генератор идентификаторов
+            Id = Guid.NewGuid();
             ClientId = clienId;
             InitiatorId = initiatorId;
             CommunicationProviderId = communicationProviderId;

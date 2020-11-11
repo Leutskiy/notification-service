@@ -1,32 +1,26 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace ENS.WebApi.Channels
 {
     public class SendEmailNotificationHandler : ICommandHandler<SendEmailNotification, Result<Success, Failure>>
     {
-        private readonly IGeneratorId _generatorId;
+        private readonly ISmsNotificationProvider _smsNotificationProvider;
 
-        public SendEmailNotificationHandler(IGeneratorId generatorId)
+        public SendEmailNotificationHandler(ISmsNotificationProvider smsNotificationProvider)
         {
-            _generatorId = generatorId;
+            _smsNotificationProvider = smsNotificationProvider;
         }
 
 
         public Result<Success, Failure> Handle(SendEmailNotification input)
         {
-            var notificationId = _generatorId.Generate();
             var messagetext = string.Empty;
             var notificationStatus = NotificationStatus.Sent;
 
-            var recipients = input.Recipients;
-
-            var notifications = new List<Notification>();
-            foreach (var recipient in recipients)
+            foreach (var recipient in input.Recipients)
             {
-                var notification = new Notification();
-                notification.Init(
-                    id: notificationId,
+                // новое уведомление в статуса New
+                var notification = new Notification(
                     clienId: recipient.ClientId,
                     initiatorId: Guid.Empty,
                     communicationProviderId: Guid.Empty,
@@ -36,14 +30,12 @@ namespace ENS.WebApi.Channels
                     status: notificationStatus,
                     type: NotificationType.Email);
 
-                notifications.Add(notification);
+                // отправка уведомления
+                _smsNotificationProvider.Send(notification);
             }
+
+            return new Result<Success, Failure>(new Success());
         }
-    }
-
-    public sealed class NotificationRepository
-    {
-
     }
 
     public class Success
